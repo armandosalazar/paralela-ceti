@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Paralela.iml" filepath="$PROJECT_DIR$/Paralela.iml" />
+      <module fileurl="file://$PROJECT_DIR$/paralela-ceti.iml" filepath="$PROJECT_DIR$/paralela-ceti.iml" />
     </modules>
   </component>
 </project>
