@@ -1,9 +1,10 @@
+package classes._02_07_23;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.EventListener;
 
-public class Main {
+public class ButtonsProgram {
     public static void main(String[] args) {
         new Window().setVisible(true);
     }
