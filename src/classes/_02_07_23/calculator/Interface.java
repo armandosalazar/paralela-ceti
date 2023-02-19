@@ -1,4 +1,4 @@
-package inherit;
+package classes._02_07_23.calculator;
 
 import java.util.Scanner;
 

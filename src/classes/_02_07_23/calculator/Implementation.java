@@ -1,4 +1,4 @@
-package inherit;
+package classes._02_07_23.calculator;
 
 public class Implementation implements Calculator {
     @Override
