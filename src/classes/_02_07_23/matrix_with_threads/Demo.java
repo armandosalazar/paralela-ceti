@@ -1,4 +1,4 @@
-package threads;
+package classes._02_07_23.matrix_with_threads;
 
 import java.util.Random;
 

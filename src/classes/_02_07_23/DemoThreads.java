@@ -1,3 +1,5 @@
+package classes._02_07_23;
+
 public class DemoThreads extends Thread {
     @Override
     public void run() {

@@ -12,4 +12,8 @@
 
 * Programa que contienen dos botones en una interfaz gráfica, uno abre un diálogo que dice hola y el otro adiós.
 
+#### Programa que hereda de la clase Thread
+
+* Programa para utilizar el método run de la clase Thread
+
 ---
