@@ -1,0 +1,67 @@
+package classes._02_15_23;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+
+public class Career {
+
+    public static void main(String[] args) {
+        ArrayList<Animal> animals = new ArrayList<>();
+        Animal animal1 = new Animal("Leopardo", 16.11);
+        Animal animal2 = new Animal("Gacela", 26.94);
+        Animal animal3 = new Animal("Hiena", 17.77);
+        animal1.start();
+        animal2.start();
+        animal3.start();
+        animals.add(animal1);
+        animals.add(animal2);
+        animals.add(animal3);
+        while (animal1.isAlive() || animal2.isAlive() || animal3.isAlive()) {
+        }
+        System.out.println("==== POSITIONS ====");
+        animals.sort(Comparator.comparing(Animal::getMtsPerSecond));
+        for (Animal animal : animals) {
+            System.out.println(animal.getAnimalName().concat(" ").concat(String.valueOf(animal.getMtsPerSecond())));
+        }
+
+    }
+}
+
+class Animal extends Thread {
+    private final String name;
+    private final double velocity;
+    private double mtsPerSecond;
+
+
+    public Animal(String name, double velocity) {
+        this.name = name;
+        this.velocity = velocity;
+        this.mtsPerSecond = velocity;
+    }
+
+    @Override
+    public void run() {
+        super.run();
+        while (true) {
+            try {
+                if (mtsPerSecond >= 700) {
+                    break;
+                }
+                System.out.println(name.concat(" ").concat(String.valueOf(mtsPerSecond)));
+                mtsPerSecond += velocity;
+                sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public String getAnimalName() {
+        return name;
+    }
+
+    public double getMtsPerSecond() {
+        return mtsPerSecond;
+    }
+
+}
