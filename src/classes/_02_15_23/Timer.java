@@ -1,6 +1,5 @@
 package classes._02_15_23;
 
-import java.io.IOException;
 
 public class Timer extends Thread {
     private int seconds;

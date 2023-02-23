@@ -1,5 +1,6 @@
 package classes._02_15_23;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -20,8 +21,10 @@ public class Career {
         }
         System.out.println("==== POSITIONS ====");
         animals.sort(Comparator.comparing(Animal::getMtsPerSecond));
+        int pos = 1;
         for (Animal animal : animals) {
-            System.out.println(animal.getAnimalName().concat(" ").concat(String.valueOf(animal.getMtsPerSecond())));
+            System.out.println(String.valueOf(pos).concat("º ").concat(animal.getAnimalName()));
+            pos++;
         }
 
     }
@@ -41,13 +44,15 @@ class Animal extends Thread {
 
     @Override
     public void run() {
+        String career = ".";
         super.run();
         while (true) {
             try {
                 if (mtsPerSecond >= 700) {
                     break;
                 }
-                System.out.println(name.concat(" ").concat(String.valueOf(mtsPerSecond)));
+                career += ".";
+                System.out.println(career.concat(name.concat(" ").concat(String.valueOf(new DecimalFormat("000.0").format(mtsPerSecond)))));
                 mtsPerSecond += velocity;
                 sleep(1000);
             } catch (InterruptedException e) {
