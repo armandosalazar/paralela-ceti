@@ -17,8 +17,8 @@ public class Career {
         animals.add(animal1);
         animals.add(animal2);
         animals.add(animal3);
-        while (animal1.isAlive() || animal2.isAlive() || animal3.isAlive()) {
-        }
+        while (animal1.isAlive() || animal2.isAlive() || animal3.isAlive())
+            continue;
         System.out.println("==== POSITIONS ====");
         animals.sort(Comparator.comparing(Animal::getMtsPerSecond));
         int pos = 1;
