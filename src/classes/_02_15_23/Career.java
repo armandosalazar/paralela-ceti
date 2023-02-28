@@ -6,7 +6,7 @@ import java.util.Comparator;
 
 public class Career {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         ArrayList<Animal> animals = new ArrayList<>();
         Animal animal1 = new Animal("Leopardo", 16.11);
         Animal animal2 = new Animal("Gacela", 26.94);
@@ -14,11 +14,14 @@ public class Career {
         animal1.start();
         animal2.start();
         animal3.start();
+        animal1.join();
+        animal2.join();
+        animal3.join();
         animals.add(animal1);
         animals.add(animal2);
         animals.add(animal3);
-        while (animal1.isAlive() || animal2.isAlive() || animal3.isAlive())
-            continue;
+//        while (animal1.isAlive() || animal2.isAlive() || animal3.isAlive())
+//            continue;
         System.out.println("==== POSITIONS ====");
         animals.sort(Comparator.comparing(Animal::getMtsPerSecond));
         int pos = 1;
