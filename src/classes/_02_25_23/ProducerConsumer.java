@@ -99,7 +99,7 @@ class Consumer extends Thread {
                 return;
             }
             try {
-                sleep((int) Math.random() * 100); // sleep for a randomly chosen time
+                sleep((int) Math.random() * 100);
             } catch (InterruptedException e) {
                 return;
             }
