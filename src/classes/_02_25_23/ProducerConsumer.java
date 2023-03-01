@@ -1,26 +1,57 @@
 package classes._02_25_23;
 
-import java.util.ArrayList;
-
 /**
  * Este es un problema de sincronización
  * Debería utilizar un hilo para un productor y varios para los consumidores
  */
 
 public class ProducerConsumer {
+
     public static void main(String[] args) {
+        new Monitor(8);
     }
 }
 
+class Monitor {
+    private char[] buffer = null;
+    private int maxSize = 0;
+    private boolean full = false;
+    private boolean empty = true;
+
+    public Monitor(int size) {
+        this.buffer = new char[size];
+    }
+
+    public synchronized void put(char c) throws InterruptedException {
+        while (full) {
+            wait();
+        }
+        buffer[++maxSize] = c;
+        empty = false;
+        full = maxSize >= buffer.length;
+        notifyAll();
+    }
+
+    public synchronized char get() throws InterruptedException {
+        while (empty) {
+            wait();
+        }
+        char c = buffer[--maxSize];
+        full = false;
+        empty = maxSize == 0;
+        notifyAll();
+        return c;
+    }
+
+}
+
 class Producer extends Thread {
-    private Product[] buffer = new Product[5];
+
+    private Monitor buffer;
 
     @Override
     public void run() {
         super.run();
-        for (int i = 0; i < buffer.length; i++) {
-            buffer[i] = new Product("Product ".concat(String.valueOf(i + 1)));
-        }
     }
 }
 
