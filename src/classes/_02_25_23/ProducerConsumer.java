@@ -1,75 +1,110 @@
 package classes._02_25_23;
 
-/**
- * Este es un problema de sincronización
- * Debería utilizar un hilo para un productor y varios para los consumidores
- */
-
 public class ProducerConsumer {
 
     public static void main(String[] args) {
-        new Monitor(8);
+        Buffer buffer = new Buffer();
+
+        Thread producer = new Producer(10, buffer);
+        producer.start();
+
+        Thread[] listConsumers = new Thread[10];
+        for (int i = 0; i < listConsumers.length; i++) {
+            listConsumers[i] = new Consumer(1, buffer);
+            listConsumers[i].start();
+        }
     }
+
 }
 
-class Monitor {
-    private char[] buffer = null;
-    private int maxSize = 0;
-    private boolean full = false;
+class Buffer {
+    private int contents;
     private boolean empty = true;
+    private static int id = 0;
 
-    public Monitor(int size) {
-        this.buffer = new char[size];
-    }
-
-    public synchronized void put(char c) throws InterruptedException {
-        while (full) {
-            wait();
+    public synchronized void put(int i) throws InterruptedException {
+        while (!empty) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                throw e;
+            }
         }
-        buffer[++maxSize] = c;
+        contents = i;
         empty = false;
-        full = maxSize >= buffer.length;
+        System.out.println("Producer [ put > " + i + " ]");
         notifyAll();
     }
 
-    public synchronized char get() throws InterruptedException {
+    public synchronized int get() throws InterruptedException {
         while (empty) {
-            wait();
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                throw e;
+            }
         }
-        char c = buffer[--maxSize];
-        full = false;
-        empty = maxSize == 0;
+        empty = true;
         notifyAll();
-        return c;
+        int value = contents;
+        id++;
+        System.out.println("\s\sConsumer " + id + " [ get < " + value + " ]");
+        return value;
     }
-
 }
+
 
 class Producer extends Thread {
+    private final int number;
+    private final Buffer buffer;
 
-    private Monitor buffer;
+    public Producer(int number, Buffer buffer) {
+        this.number = number;
+        this.buffer = buffer;
+    }
 
-    @Override
     public void run() {
-        super.run();
+        for (int i = 0; i < number; i++) {
+            try {
+                sleep((int) Math.random() * 100);
+            } catch (InterruptedException e) {
+                return;
+            }
+
+            try {
+                buffer.put(i + 1);
+            } catch (InterruptedException e) {
+                return;
+            }
+
+        }
     }
 }
 
 class Consumer extends Thread {
+    private final int number;
+    private final Buffer buffer;
+
+    public Consumer(int number, Buffer buffer) {
+        this.number = number;
+        this.buffer = buffer;
+    }
+
+    public void run() {
+        int value;
+        for (int i = 0; i < number; i++) {
+            try {
+                value = buffer.get();
+            } catch (InterruptedException e) {
+                return;
+            }
+            try {
+                sleep((int) Math.random() * 100); // sleep for a randomly chosen time
+            } catch (InterruptedException e) {
+                return;
+            }
+
+        }
+    }
 }
 
-class Product {
-    private String name;
-
-    public Product(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-}
