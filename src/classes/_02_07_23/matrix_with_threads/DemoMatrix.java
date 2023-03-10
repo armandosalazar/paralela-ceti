@@ -17,7 +17,7 @@ public class DemoMatrix extends Thread {
         for (int i = 0; i < originalMatrix.length; i++) {
             for (int j = 0; j < originalMatrix.length; j++) {
                 if (multipliedMatrix[i][j] != originalMatrix[i][j] * 2) {
-                    multipliedMatrix[i][j] = originalMatrix[i][j] * 2;
+                    multipliedMatrix[i][j] = (originalMatrix[i][j] * 2);
                 }
             }
         }
