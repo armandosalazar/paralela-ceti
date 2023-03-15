@@ -7,10 +7,8 @@ public class Bridge {
     private static final Mutex mutex = new Mutex();
 
     public static void main(String[] args) {
-        Generator north = new Generator("North", mutex);
-        Generator south = new Generator("South", mutex);
-        north.start();
-        south.start();
+        Generator generator = new Generator(mutex);
+        generator.start();
     }
 
 }
@@ -18,41 +16,50 @@ public class Bridge {
 class Mutex {
     private boolean isLocked = false;
 
-    public synchronized void lock() throws InterruptedException {
+    synchronized void lock() throws InterruptedException {
         while (isLocked) {
             wait();
         }
         isLocked = true;
     }
 
-    public synchronized void unlock() {
+    synchronized void unlock() {
         isLocked = false;
-        // notify();
         notifyAll();
     }
 }
 
 class Generator extends Thread {
-    private final Mutex mutex;
+    private Mutex mutex;
 
-    Generator(String name, Mutex mutex) {
-        super(name);
+    Generator(Mutex mutex) {
         this.mutex = mutex;
     }
 
     @Override
     public void run() {
-        // super.run();
+        super.run();
+        // System.out.println(new Random().nextInt(1, 6) + this.getName());
+        String[] directions = {"North", "South"};
         while (true) {
-            // System.out.println(new Random().nextInt(1, 6) + this.getName());
-            for (int i = 0; i < new Random().nextInt(1, 6); i++) {
-                System.out.println("Car from " + this.getName());
+            try {
+                mutex.lock();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            int random = new Random().nextInt(1, 6);
+            int direction = new Random().nextInt(0, 2);
+            System.out.println(random + " cars from " + directions[direction]);
+            for (int i = 0; i < random; i++) {
+                System.out.println("Car from " + directions[direction]);
                 try {
                     sleep(1000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
+
+            mutex.unlock();
         }
     }
 }
