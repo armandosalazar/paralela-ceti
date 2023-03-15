@@ -7,8 +7,10 @@ public class Bridge {
     private static final Mutex mutex = new Mutex();
 
     public static void main(String[] args) {
-        Generator generator = new Generator(mutex);
-        generator.start();
+        Generator north = new Generator("North", mutex);
+        Generator south = new Generator("South", mutex);
+        north.start();
+        south.start();
     }
 
 }
@@ -30,17 +32,16 @@ class Mutex {
 }
 
 class Generator extends Thread {
-    private Mutex mutex;
+    private final Mutex mutex;
 
-    Generator(Mutex mutex) {
+    Generator(String name, Mutex mutex) {
+        super(name);
         this.mutex = mutex;
     }
 
     @Override
     public void run() {
         super.run();
-        // System.out.println(new Random().nextInt(1, 6) + this.getName());
-        String[] directions = {"North", "South"};
         while (true) {
             try {
                 mutex.lock();
@@ -48,18 +49,22 @@ class Generator extends Thread {
                 throw new RuntimeException(e);
             }
             int random = new Random().nextInt(1, 6);
-            int direction = new Random().nextInt(0, 2);
-            System.out.println(random + " cars from " + directions[direction]);
+            System.out.println(random + " cars from " + this.getName());
             for (int i = 0; i < random; i++) {
-                System.out.println("Car from " + directions[direction]);
+                System.out.println("Car from " + this.getName());
                 try {
-                    sleep(1000);
+                    sleep(500);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
 
             mutex.unlock();
+            try {
+                sleep((long) (Math.random() * 1000));
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
