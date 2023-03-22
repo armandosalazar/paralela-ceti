@@ -16,6 +16,7 @@ public class SantaClaus {
 
     static class Mutex {
         private boolean isLocked = false;
+        int key = 0;
 
         synchronized void lock() throws InterruptedException {
             while (isLocked) {
@@ -48,10 +49,13 @@ class Santa extends Thread {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            System.out.println("Santa is working");
+            if (mutex.key == 9) {
+                System.out.println("Santa is working with reindeers");
+                mutex.key = 0;
+            }
             mutex.unlock();
             try {
-                sleep(1000);
+                sleep((long) (Math.random() * 1000));
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -94,7 +98,7 @@ class Elf extends Thread {
             }
             mutex.unlock();
             try {
-                sleep(500);
+                sleep((long) (Math.random() * 1000));
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -115,22 +119,28 @@ class Reindeer extends Thread {
         super.run();
         while (true) {
             try {
-                mutex.lock();
+                sleep(0);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
             for (int i = 1; i <= NUM_REINDEER; i++) {
-                System.out.println("Reindeer " + i + " is back from vacation");
                 try {
-                    sleep(500);
+                    mutex.lock();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                System.out.println("Reindeer " + i + " is back from vacation");
+                mutex.key = i;
+                try {
+                    mutex.unlock();
+                    sleep((long) (Math.random() * 1000));
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
 
-            mutex.unlock();
             try {
-                sleep(500);
+                sleep((long) (Math.random() * 1000));
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

@@ -51,7 +51,7 @@ class Animal extends Thread {
         super.run();
         while (true) {
             try {
-                if (mtsPerSecond >= 700) {
+                if (mtsPerSecond > 750) {
                     break;
                 }
                 career += ".";

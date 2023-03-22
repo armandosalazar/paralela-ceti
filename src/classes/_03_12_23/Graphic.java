@@ -1,7 +1,7 @@
 package classes._03_12_23;
 
 import javax.swing.*;
-import java.util.ArrayList;
+import java.awt.*;
 import java.util.Random;
 
 public class Graphic {
@@ -23,10 +23,13 @@ class Window extends JFrame {
 }
 
 class Panel extends JPanel {
-    ArrayList<JLabel> labels = new ArrayList<>();
+    JLabel carNorth = new JLabel(new ImageIcon(new ImageIcon("src/classes/_03_12_23/amg.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
+    JLabel carSouth = new JLabel(new ImageIcon(new ImageIcon("src/classes/_03_12_23/urus.jpeg").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
 
     Panel() {
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        add(carNorth);
+        add(carSouth);
         M mutex = new M();
         G north = new G("North", mutex, this);
         G south = new G("South", mutex, this);
@@ -73,18 +76,19 @@ class Panel extends JPanel {
                 System.out.println(random + " cars from " + this.getName());
                 for (int i = 0; i < random; i++) {
                     System.out.println("Car from " + this.getName());
-                    JLabel label = new JLabel("Car from " + this.getName());
-                    labels.add(label);
-                    panel.add(label);
-                    panel.revalidate();
-                    panel.repaint();
+                    //cardNorth = new JLabel(new ImageIcon(new ImageIcon("src/classes/_03_12_23/amg.png").getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
+                    //revalidate();
+                    //repaint();
 
-                    for (JLabel lab : labels) {
-                        lab.setLocation(lab.getX() - 500, lab.getY());
-                        panel.revalidate();
-                        panel.repaint();
+                    // carNorth.setLocation(0, carNorth.getX());
+                    for (int j = 0; j < 300; j += 10) {
+                        carNorth.setLocation(carNorth.getX() + j, carNorth.getY());
+                        try {
+                            sleep(500);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
-
                     try {
                         sleep(500);
                     } catch (InterruptedException e) {
@@ -92,10 +96,6 @@ class Panel extends JPanel {
                     }
                 }
 
-
-                for (JLabel label : labels) {
-                    panel.remove(label);
-                }
 
                 mutex.unlock();
                 try {
