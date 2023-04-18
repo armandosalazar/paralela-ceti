@@ -3,7 +3,6 @@ package classes._03_22_23;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
@@ -28,9 +27,9 @@ class GUI extends JFrame {
     static class Panel extends JPanel {
         // private final Font font = new Font("Euclid Circular A", Font.PLAIN, 14);
         // light green
-        // Color primaryColor = new Color(0xCBFAD6);
+        Color primaryColor = new Color(0xCBFAD6);
         // light blue
-        Color primaryColor = new Color(0x9EE0F5);
+        // Color primaryColor = new Color(0x9EE0F5);
 
         private final JPanel panelButtons = new JPanel();
         private final JButton buttonGenerate = new JButton("Generate");
@@ -69,19 +68,6 @@ class GUI extends JFrame {
         }
 
         private void setStyles() {
-//            labelInput.setFont(font);
-//            textFieldInput.setFont(font);
-//            labelOutput.setFont(font);
-//            textAreaOutputGenerate.setFont(font);
-//            labelOutputMergeSort.setFont(font);
-//            textAreaOutputMergeSort.setFont(font);
-//            labelTime.setFont(font);
-//            timeTable.setFont(font);
-//            buttonGenerate.setFont(font);
-//            buttonClear.setFont(font);
-//            buttonMergeSort.setFont(font);
-//            buttonForkJoin.setFont(font);
-//            buttonExecutorService.setFont(font);
             panelButtons.setBackground(primaryColor);
             panelInput.setBackground(primaryColor);
         }
@@ -155,7 +141,7 @@ class GUI extends JFrame {
                 int length = Integer.parseInt(textFieldInput.getText());
                 data = new int[length];
                 for (int i = 0; i < length; i++) {
-                    data[i] = new Random().nextInt(1, 101);
+                    data[i] = (int) (Math.random() * 100 + 1);
                 }
                 textAreaOutputGenerate.setText("");
                 for (int i = 0; i < length; i++) {
@@ -171,9 +157,6 @@ class GUI extends JFrame {
         private void clear() {
             textAreaOutputGenerate.setText("");
             textAreaOutputMergeSort.setText("");
-//            model.setValueAt("0.0 ms", 0, 0);
-//            model.setValueAt("0.0 ms", 0, 1);
-//            model.setValueAt("0.0 ms", 0, 2);
         }
 
         private void mergeSortSimple() {
@@ -269,14 +252,14 @@ class AlgorithmForkJoin extends RecursiveAction {
 
     @Override
     protected void compute() {
-        if (data.length < 2) return; // if data.length < 2, then it is already sorted (base case
-        int middle = data.length / 2;
-        int[] left = leftHalf(data);
-        int[] right = rightHalf(data);
+        if (data.length > 1) {
+            int[] left = leftHalf(data);
+            int[] right = rightHalf(data);
 
-        invokeAll(new AlgorithmForkJoin(left), new AlgorithmForkJoin(right));
+            invokeAll(new AlgorithmForkJoin(left), new AlgorithmForkJoin(right));
 
-        merge(data, left, right);
+            merge(data, left, right);
+        }
     }
 
     private int[] leftHalf(int[] data) {
