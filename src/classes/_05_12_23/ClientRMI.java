@@ -12,7 +12,7 @@ public class ClientRMI {
         try {
             String name = JOptionPane.showInputDialog("Enter your name:");
 
-            Registry registry = LocateRegistry.getRegistry("localhost", 3000);
+            Registry registry = LocateRegistry.getRegistry("192.168.1.12", 3000);
             ChatServer server = (ChatServer) registry.lookup("Chat");
             new Thread(new ChatClientImpl(name, server)).start();
         } catch (RemoteException | NotBoundException e) {
