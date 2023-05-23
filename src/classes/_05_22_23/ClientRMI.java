@@ -13,12 +13,12 @@ public class ClientRMI {
     public static void main(String[] args) {
         String name = JOptionPane.showInputDialog("Enter your name:");
 
-        try {
-            Registry registry = LocateRegistry.getRegistry(HOST, PORT);
-            Server server = (Server) registry.lookup("Chat");
-            new Thread(new ClientImpl(name, server)).start();
-        } catch (RemoteException | NotBoundException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            Registry registry = LocateRegistry.getRegistry(HOST, PORT);
+//            Server server = (Server) registry.lookup("Chat");
+//            new Thread(new ClientImpl(name, server)).start();
+//        } catch (RemoteException | NotBoundException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 }
