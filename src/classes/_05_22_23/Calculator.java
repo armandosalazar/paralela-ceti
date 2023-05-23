@@ -8,7 +8,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 public class Calculator extends JFrame {
-    private static final JTextArea display = new JTextArea(10, 20);
+    private static final JTextArea display = new JTextArea(10, 23);
     private static ClientImpl client = null;
     private static String name;
 
@@ -22,11 +22,17 @@ public class Calculator extends JFrame {
     }
 
     public static void main(String[] args) throws NotBoundException, RemoteException {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+                 UnsupportedLookAndFeelException e) {
+            throw new RuntimeException(e);
+        }
         Calculator calculator = new Calculator();
         calculator.setVisible(true);
         Registry registry = null;
         try {
-            registry = LocateRegistry.getRegistry("192.168.1.130", 8000);
+            registry = LocateRegistry.getRegistry("192.168.1.12", 8000);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -53,7 +59,7 @@ public class Calculator extends JFrame {
                 display.setLineWrap(true);
                 display.setWrapStyleWord(true);
                 display.setEditable(false);
-                // display.setFont(new Font("Source Code Pro", Font.BOLD, 14));
+                display.setFont(new Font("Ubuntu Mono", Font.ITALIC, 20));
                 add(new JScrollPane(display));
             }
         }
@@ -140,7 +146,7 @@ public class Calculator extends JFrame {
                 });
 
                 for (JButton button : buttons) {
-                    button.setFont(new Font("Source Code Pro", Font.BOLD, 20));
+                    button.setFont(new Font("Ubuntu Mono", Font.BOLD, 20));
                     panel.add(button);
                 }
             }

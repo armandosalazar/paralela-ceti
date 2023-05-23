@@ -13,6 +13,7 @@ public class ServerRMI {
 
         try {
             String host = Inet4Address.getLocalHost().getHostAddress();
+            host = "192.168.1.12";
             System.setProperty("java.rmi.server.hostname", host);
             Registry registry = LocateRegistry.createRegistry(PORT);
 
