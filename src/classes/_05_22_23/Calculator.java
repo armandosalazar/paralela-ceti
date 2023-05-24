@@ -8,7 +8,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 public class Calculator extends JFrame {
-    private static final JTextArea display = new JTextArea(10, 23);
+    private static final JTextArea display = new JTextArea(10, 14);
     private static ClientImpl client = null;
     private static String name;
 
@@ -59,7 +59,7 @@ public class Calculator extends JFrame {
                 display.setLineWrap(true);
                 display.setWrapStyleWord(true);
                 display.setEditable(false);
-                display.setFont(new Font("Ubuntu Mono", Font.ITALIC, 20));
+                display.setFont(new Font("Ubuntu", Font.ITALIC, 20));
                 add(new JScrollPane(display));
             }
         }
@@ -146,7 +146,7 @@ public class Calculator extends JFrame {
                 });
 
                 for (JButton button : buttons) {
-                    button.setFont(new Font("Ubuntu Mono", Font.BOLD, 20));
+                    button.setFont(new Font("Ubuntu", Font.BOLD, 20));
                     panel.add(button);
                 }
             }
