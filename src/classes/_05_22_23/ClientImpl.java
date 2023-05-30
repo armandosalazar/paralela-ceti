@@ -29,15 +29,15 @@ class ClientImpl extends UnicastRemoteObject implements Client, Runnable {
             if (message.equals("0")) {
                 if (messageMe(name, message)) return;
                 server.addNumber(0);
-                display.append(name + ": 0\n");
+                display.append("0");
             } else if (message.equals("1")) {
                 if (messageMe(name, message)) return;
                 server.addNumber(1);
-                display.append(name + ": 1\n");
+                display.append("1");
             } else if (message.equals("2")) {
                 if (messageMe(name, message)) return;
                 server.addNumber(2);
-                display.append(name + ": 2\n");
+                display.append("2");
             } else if (message.equals("3")) {
                 if (messageMe(name, message)) return;
                 server.addNumber(3);
@@ -74,7 +74,8 @@ class ClientImpl extends UnicastRemoteObject implements Client, Runnable {
                     result = previous / number;
                     previous = number;
                 }
-                display.append(name + ": Your result = " + result + "\n");
+                // display.append(name + ": Your result = " + result + "\n");
+                display.append(" = " + result + "\n");
             } else if (message.equals("*")) {
                 display.append(name + ": *\n");
                 int previous = 0;
@@ -83,23 +84,25 @@ class ClientImpl extends UnicastRemoteObject implements Client, Runnable {
                     result = previous * number;
                     previous = number;
                 }
-                display.append(name + ": Your result = " + result + "\n");
+                // display.append(name + ": Your result = " + result + "\n");
+                display.append("= " + result + "\n");
             } else if (message.equals("+")) {
-                display.append(name + ": +\n");
+                display.append("+");
                 int result = 0;
                 for (int number : server.getNumbers()) {
                     result += number;
                 }
-                display.append(name + ": Your result = " + result + "\n");
+                // display.append(name + ": Your result = " + result + "\n");
+                display.append("= " + result + "\n");
             } else if (message.equals("-")) {
-                display.append(name + ": -\n");
+                display.append("-");
                 int previous = 0;
                 int result = 0;
                 for (int number : server.getNumbers()) {
                     result = previous - number;
                     previous = number;
                 }
-                display.append(name + ": Your result = " + result + "\n");
+                display.append("= " + result + "\n");
             }
         }
     }
@@ -107,7 +110,7 @@ class ClientImpl extends UnicastRemoteObject implements Client, Runnable {
     private boolean messageMe(String name, String message) {
         if (name.equals(this.name)) {
             // System.out.println("Message from me");
-            display.append(name + ": " + message + "\n");
+            display.append(message + " ");
             return true;
         }
         return false;
