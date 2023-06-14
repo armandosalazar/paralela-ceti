@@ -24,7 +24,7 @@ public class CryptoRMI {
     static Server server;
 
     public static void main(String[] args) throws RemoteException, NotBoundException {
-        Registry registry = LocateRegistry.getRegistry("localhost", 8080);
+        Registry registry = LocateRegistry.getRegistry("192.168.1.138", 8080);
         server = (Server) registry.lookup("server");
         new Thread(new ClientImpl(server)).start();
         new UI().setVisible(true);
