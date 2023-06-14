@@ -1,13 +1,23 @@
 package classes._06_13_23;
 
+import javax.crypto.*;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 
 public class CryptoRMI {
     // RMI variables
@@ -99,7 +109,17 @@ public class CryptoRMI {
                         fileInputStream.read(fileBytes);
                         fileInputStream.close();
 
-                        server.uploadFile(fileName, fileBytes, passwordField.getText().trim());
+                        // TODO: 6/13/2021
+                        String password = passwordField.getText().trim();
+                        SecretKey secretKey = generateKeyFromPassword(password, server.getSalt());
+                        System.out.println(secretKey.getEncoded());
+
+                        Cipher cipher = Cipher.getInstance("AES");
+                        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+                        byte[] encryptedBytes = cipher.doFinal(fileBytes);
+
+
+                        server.uploadFile(fileName, encryptedBytes, password);
 
                         JOptionPane.showMessageDialog(this, "File uploaded successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
                     } catch (Exception ex) {
@@ -107,6 +127,40 @@ public class CryptoRMI {
                     }
                 }
             });
+
+            buttonApplyAlgorithms.addActionListener(e -> {
+                try {
+                    ((DefaultTableModel) tableTimes.getModel()).addRow(new Object[]{server.applyAlgorithm(passwordField.getText().trim()), server.applyAlgorithmForkJoin(passwordField.getText().trim()), server.applyAlgorithmExecutorService(passwordField.getText().trim())});
+                    File directory = new File("files");
+                    if (!directory.exists()) {
+                        directory.mkdir();
+                    }
+                    File[] files = directory.listFiles();
+                    for (File file : files) {
+                        if (file.isFile()) {
+                            // TODO: add row with file name, file size, file path
+                            ((DefaultTableModel) tableFiles.getModel()).addRow(new Object[]{file.getName(), file.length() + " bytes", file.getAbsolutePath()});
+                        }
+                    }
+
+                } catch (InvalidKeySpecException | NoSuchPaddingException | IllegalBlockSizeException |
+                         BadPaddingException | InvalidKeyException | NoSuchAlgorithmException | IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            });
+        }
+
+        SecretKey generateKeyFromPassword(String password, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
+            int iterations = 1000;
+            int keyLength = 128;
+
+            KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt, iterations, keyLength);
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            byte[] keyBytes = keyFactory.generateSecret(keySpec).getEncoded();
+
+            return new SecretKeySpec(keyBytes, "AES");
         }
     }
+
+
 }
