@@ -20,28 +20,46 @@ import java.util.concurrent.ScheduledExecutorService;
 public class ServerImpl extends UnicastRemoteObject implements Server {
     ArrayList<Client> clients;
     static String fileName;
-    byte[] fileBytes;
+    // byte[] fileBytes;
+    ArrayList<byte[]> fileBytes;
+
     String password;
 
 
     public ServerImpl() throws RemoteException {
         super();
         this.clients = new ArrayList<>();
+        this.fileBytes = new ArrayList<>();
     }
 
     @Override
     public void uploadFile(String fileName, byte[] fileBytes, String password) throws Exception {
-        this.fileName = fileName;
-        this.fileBytes = fileBytes;
-        this.password = password;
-        System.out.println("Received file: " + fileName);
-        System.out.println("File size: " + fileBytes.length + " bytes");
-        System.out.println("File content: " + new String(fileBytes));
-        System.out.println("File password: " + new String(password));
-        // create a new file with the same name and content
-        FileOutputStream fileOutputStream = new FileOutputStream("files/" + fileName);
-        fileOutputStream.write(fileBytes);
-        fileOutputStream.close();
+        if (this.fileBytes.size() == 0) {
+            this.fileName = fileName;
+            // this.fileBytes = fileBytes;
+            this.fileBytes.add(fileBytes);
+            // this.password = password;
+            System.out.println("Received file: " + fileName);
+            System.out.println("File size: " + fileBytes.length + " bytes");
+            System.out.println("File content: " + new String(fileBytes));
+            System.out.println("File password: " + password);
+            // create a new file with the same name and content
+            FileOutputStream fileOutputStream = new FileOutputStream("files/" + fileName);
+            fileOutputStream.write(fileBytes);
+            fileOutputStream.close();
+        } else {
+            this.fileName += fileName;
+            this.fileBytes.add(fileBytes);
+            // this.password += password;
+            System.out.println("Received file: " + fileName);
+            System.out.println("File size: " + fileBytes.length + " bytes");
+            System.out.println("File content: " + new String(fileBytes));
+            System.out.println("File password: " + password);
+            // create a new file with the same name and content
+            FileOutputStream fileOutputStream = new FileOutputStream("files/" + fileName);
+            fileOutputStream.write(fileBytes);
+            fileOutputStream.close();
+        }
     }
 
     @Override
@@ -58,7 +76,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server {
     @Override
     public long applyAlgorithm(String password) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
         long startTime = System.currentTimeMillis();
-        Algorithm.decryptFile(fileBytes, generateKeyFromPassword(password, getSalt()), "normal");
+        Algorithm.decryptFile(convertArrayListToByteArray(fileBytes), generateKeyFromPassword(password, getSalt()), "normal");
         long endTime = System.currentTimeMillis();
         return endTime - startTime;
     }
@@ -66,7 +84,7 @@ public class ServerImpl extends UnicastRemoteObject implements Server {
     @Override
     public long applyAlgorithmForkJoin(String password) throws RemoteException, NoSuchAlgorithmException, InvalidKeySpecException {
         long startTime = System.currentTimeMillis();
-        ForkJoinPool.commonPool().invoke(new AlgorithmForkJoin(fileBytes, generateKeyFromPassword(password, getSalt())));
+        ForkJoinPool.commonPool().invoke(new AlgorithmForkJoin(convertArrayListToByteArray(fileBytes), generateKeyFromPassword(password, getSalt())));
         long endTime = System.currentTimeMillis();
         return endTime - startTime;
     }
@@ -75,10 +93,21 @@ public class ServerImpl extends UnicastRemoteObject implements Server {
     public long applyAlgorithmExecutorService(String password) throws RemoteException, NoSuchAlgorithmException, InvalidKeySpecException {
         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(3);
         long startTime = System.currentTimeMillis();
-        scheduledExecutorService.submit(new AlgorithmExecutorService(fileBytes, generateKeyFromPassword(password, getSalt())));
+        scheduledExecutorService.submit(new AlgorithmExecutorService(convertArrayListToByteArray(fileBytes), generateKeyFromPassword(password, getSalt())));
         long endTime = System.currentTimeMillis();
         return endTime - startTime;
 
+    }
+
+    byte[] convertArrayListToByteArray(ArrayList<byte[]> arrayList) {
+        byte[] result = new byte[0];
+        for (byte[] bytes : arrayList) {
+            byte[] temp = new byte[result.length + bytes.length];
+            System.arraycopy(result, 0, temp, 0, result.length);
+            System.arraycopy(bytes, 0, temp, result.length, bytes.length);
+            result = temp;
+        }
+        return result;
     }
 
 
